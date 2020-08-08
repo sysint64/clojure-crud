@@ -52,7 +52,6 @@
     (println (str "Starting database at " host ":" port))
     (let [connection (connect-to-database host port user name password)]
       (swap! app-state (fn [it] (assoc it :db-connection connection)))
-      (println app-state)
       (assoc component :connection connection)))
 
   (stop [component]
