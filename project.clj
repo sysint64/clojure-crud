@@ -8,10 +8,15 @@
                  [http-kit "2.4.0"]
                  [ring/ring-defaults "0.3.2"]
                  [org.clojure/data.json "1.0.0"]
+                 [org.postgresql/postgresql "42.2.14"]
                  [clj-postgresql "0.7.0"]
                  [migratus "1.2.8"]
                  [com.stuartsierra/component "1.0.0"]
                  [reloaded.repl "0.2.4"]]
+  :plugins [[migratus-lein "0.7.3"]]
+  :migratus {:store :database
+             :migration-dir "resources/migrations"
+             :db ~(get (System/getenv) "DATABASE_URL")}
   :main ^:skip-aot app.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}

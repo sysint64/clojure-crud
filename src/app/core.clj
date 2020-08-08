@@ -18,6 +18,20 @@
   (when server
     (server)))
 
+;; (defn- init-db []
+;; )
+
+;; (def db (pg/pool :host "localhost"
+;;                  :user "clojure_crud"
+;;                  :dbname "clojure_crud"
+;;                  :password "123321"))
+
+;; (jdbc/query db ["SELECT * FROM "])
+
+;; (defn- test [] ())
+
+;; (defn- close-db [] (pg/close! db))
+
 (defn list-page [req]
   {:status  200
    :headers {"Content-Type" "text/html"}
