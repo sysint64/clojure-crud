@@ -9,7 +9,6 @@
             [clojure.pprint :as pp]
             [clojure.string :as str]
             [clojure.data.json :as json]
-            ;; [clj-postgresql.core :as pg]
             [clojure.java.jdbc :as jdbc]))
 
 (defrecord AppState [db-connection])
