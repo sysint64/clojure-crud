@@ -1,6 +1,8 @@
 (ns app.core
   (:gen-class)
   (:require [app.db :as db]
+            [app.state :as state]
+            [app.patients-service :as service]
             [org.httpkit.server :as server]
             [compojure.core :refer :all]
             [compojure.route :as route]
@@ -11,18 +13,10 @@
             [clojure.data.json :as json]
             [clojure.java.jdbc :as jdbc]))
 
-(defrecord AppState [db-connection])
-
-(def app-state (atom (AppState. nil)))
-
-(defn db-connection []
-  (:db-connection @app-state))
-
 (defn list-page [req]
   {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body (let [connection (db-connection)]
-           (jdbc/query connection ["SELECT * FROM patients"]))})
+   :headers {"Content-Type" "text/json"}
+   :body (str (json/write-str (service/get-all-patients (:page (:params req)) 10)))})
 
 (defroutes app-routes
   (GET "/" [] list-page)
@@ -41,13 +35,13 @@
   (start [component]
     (println (str "Starting database at " uri))
     (let [connection (db/connect-to-database uri)]
-      (swap! app-state (fn [it] (assoc it :db-connection connection)))
+      (state/set-db-connection connection)
       (assoc component :connection connection)))
 
   (stop [component]
     (println "Stopping database")
     (db/close-db-connection (:connection component))
-    (swap! app-state (fn [it] (dissoc it :db-connection)))
+    (state/remove-db-connection)
     (dissoc component :connection)))
 
 (defrecord HttpServer [port server]
