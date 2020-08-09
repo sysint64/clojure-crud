@@ -7,6 +7,9 @@ CREATE TYPE sex_t AS ENUM (
 --;;
 CREATE TABLE IF NOT EXISTS patients (
   id serial NOT NULL PRIMARY KEY,
+  first_name varchar(255) NOT NULL,
+  last_name varchar(255) NOT NULL,
+  middle_name varchar(255) NOT NULL,
   sex sex_t NOT NULL,
   date_of_birth date NOT NULL,
   address varchar(255) NOT NULL,
