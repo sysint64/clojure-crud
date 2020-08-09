@@ -9,7 +9,6 @@
                  [ring/ring-defaults "0.3.2"]
                  [org.clojure/data.json "1.0.0"]
                  [org.postgresql/postgresql "42.2.14"]
-                 [clj-postgresql "0.7.0"]
                  [migratus "1.2.8"]
                  [com.stuartsierra/component "1.0.0"]
                  [reloaded.repl "0.2.4"]]

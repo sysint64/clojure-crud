@@ -11,9 +11,32 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          # POSTGRES_HOST: postgres
+          # POSTGRES_PORT: 5432
+          POSTGRES_DB: clojure_crud_test
+          POSTGRES_USER: clojure_crud_test
+          POSTGRES_PASSWORD: 123321
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: lein deps
     - name: Run tests
-      run: lein test
+      run: lein migratus migrate && lein test
+      env:
+        # POSTGRES_HOST: postgres
+        # POSTGRES_PORT: 5432
+        DATABASE_URL: "jdbc:postgresql://localhost:5432/clojure_crud_test?user=clojure_crud_test&password=123321"
+
+      # run: DATABASE_URL="jdbc:postgresql://postgres:5432/clojure_crud_test?user=clojure_crud_test&password=123321" lein test

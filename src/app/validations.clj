@@ -43,7 +43,6 @@
     [false error-message]
     [true nil]))
 
-
 (defn compoose-validation [value validators]
   (reduce
    (fn [a, b] (let [[is_valid message] (b value)

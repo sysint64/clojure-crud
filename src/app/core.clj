@@ -1,6 +1,7 @@
 (ns app.core
   (:gen-class)
-  (:require [org.httpkit.server :as server]
+  (:require [app.db :as db]
+            [org.httpkit.server :as server]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer :all]
@@ -8,7 +9,7 @@
             [clojure.pprint :as pp]
             [clojure.string :as str]
             [clojure.data.json :as json]
-            [clj-postgresql.core :as pg]
+            ;; [clj-postgresql.core :as pg]
             [clojure.java.jdbc :as jdbc]))
 
 (defrecord AppState [db-connection])
@@ -35,32 +36,22 @@
   (when server
     (server)))
 
-(defn- connect-to-database [host port user name password]
-  (pg/pool :host host
-           :port port
-           :user user
-           :dbname name
-           :password password))
-
-(defn- close-db-connection [connection]
-  (pg/close! connection))
-
-(defrecord Database [host port user name password, connection]
+(defrecord Database [uri connection]
   component/Lifecycle
 
   (start [component]
-    (println (str "Starting database at " host ":" port))
-    (let [connection (connect-to-database host port user name password)]
+    (println (str "Starting database at " uri))
+    (let [connection (db/connect-to-database uri)]
       (swap! app-state (fn [it] (assoc it :db-connection connection)))
       (assoc component :connection connection)))
 
   (stop [component]
     (println "Stopping database")
-    (close-db-connection (:connection component))
+    (db/close-db-connection (:connection component))
     (swap! app-state (fn [it] (dissoc it :db-connection)))
     (dissoc component :connection)))
 
-(defrecord HttpServer [port]
+(defrecord HttpServer [port server]
   component/Lifecycle
 
   (start [component]
@@ -73,24 +64,20 @@
     (stop-server (:server component))
     (dissoc component :server)))
 
-(defn new-database [host port user name password]
-  (map->Database {:host host :port port :user user :name name :password password}))
+(defn new-database [uri]
+  (map->Database {:uri uri}))
 
 (defn new-http-server [port]
   (map->HttpServer {:port port}))
 
 (defn crud-system [config-options]
-  (let [{:keys [db_host db_port db_user db_name db_password http_port]} config-options]
+  (let [{:keys [db_uri http_port]} config-options]
     (component/system-map
-     :db (new-database db_host db_port db_user db_name db_password)
+     :db (new-database db_uri)
      :server (new-http-server http_port))))
 
 (defn create-system []
-  (crud-system {:db_host "localhost"
-                :db_port 5432
-                :db_user "clojure_crud"
-                :db_name "clojure_crud"
-                :db_password "123321"
+  (crud-system {:db_uri (System/getenv "DATABASE_URL")
                 :http_port 8080}))
 
 (defn -main
