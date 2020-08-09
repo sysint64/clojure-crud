@@ -97,3 +97,40 @@
     (let [[is_valid message] (digits-only-validation "291888f" :error-message "Use numbers")]
       (is (= false is_valid))
       (is (= "Use numbers" message)))))
+
+(deftest compoose-validation-test
+  (testing "valid"
+    (let [[is_valid message]
+          (compoose-validation
+           "male"
+           [str-not-blank-validation
+            (fn [value] (enum-validation value ["male", "female"]))])]
+      (is (= true is_valid))
+      (is (= nil message))))
+
+  (testing "invalid"
+    (let [[is_valid message]
+          (compoose-validation
+           "hello"
+           [str-not-blank-validation
+            (fn [value] (enum-validation value ["male", "female"]))])]
+      (is (= false is_valid))
+      (is (= "Value should be one of: 'male', 'female'" message))))
+
+  (testing "invalid 2"
+    (let [[is_valid message]
+          (compoose-validation
+           ""
+           [str-not-blank-validation
+            (fn [value] (enum-validation value ["male", "female"]))])]
+      (is (= false is_valid))
+      (is (= "Can't be blank" message))))
+
+  (testing "invalid nil"
+    (let [[is_valid message]
+          (compoose-validation
+           nil
+           [str-not-blank-validation
+            (fn [value] (enum-validation value ["male", "female"]))])]
+      (is (= false is_valid))
+      (is (= "Can't be blank" message)))))

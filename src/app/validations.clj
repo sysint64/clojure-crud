@@ -7,6 +7,14 @@
   [coll elm]
   (some #(= elm %) coll))
 
+;; https://stackoverflow.com/questions/4086889/clojure-coalesce-function#:~:text=SQL%20offers%20a%20function%20called,the%20first%20non%2Dnull%20argument.
+(defmacro coalesce
+  ([] nil)
+  ([x] x)
+  ([x & next]
+   `(let [v# ~x]
+      (if (not (nil? v#)) v# (coalesce ~@next)))))
+
 (defn str-not-blank-validation [value & {:keys [error-message]
                                          :or {error-message "Can't be blank"}}]
   (if (str/blank? value)
@@ -34,3 +42,13 @@
   (if (or (nil? value) (not (every? #(Character/isDigit %) value)))
     [false error-message]
     [true nil]))
+
+
+(defn compoose-validation [value validators]
+  (reduce
+   (fn [a, b] (let [[is_valid message] (b value)
+                    [previous_valid, previous_message] a]
+                [(and is_valid previous_valid)
+                 (coalesce message previous_message)]))
+   [true nil]
+   (reverse validators)))
