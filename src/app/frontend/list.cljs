@@ -1,3 +1,3 @@
 (ns app.frontend.list)
 
-(js/alert "Hello world!")
+;; (js/alert "Hello world!")
