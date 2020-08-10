@@ -3,27 +3,29 @@
   (:require [app.db :as db]
             [app.state :as state]
             [app.api :as api]
-            [app.frontend.views :as frontend]
             [app.errors-middleware :as errors-middleware]
             [org.httpkit.server :as server]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [com.stuartsierra.component :as component]
             [clojure.string :as str]))
 
 (defroutes app-routes
   (context "/api" [] (api/api-routes))
-  (context "/" [] (frontend/frontend-routes))
   (route/resources "/")
   (route/not-found "Error, page not found!"))
 
 (defn- start-http-server [port]
-  (server/run-server (wrap-json-response
-                      (wrap-json-body
-                       (errors-middleware/wrap-error-handler
-                        (wrap-defaults #'app-routes api-defaults))))
+  (server/run-server (wrap-cors
+                      (wrap-json-response
+                       (wrap-json-body
+                        (errors-middleware/wrap-error-handler
+                         (wrap-defaults #'app-routes api-defaults))))
+                      :access-control-allow-origin [#".*"]
+                      :access-control-allow-methods [:get :put :post :delete])
                      {:port port}))
 
 (defn- stop-server [server]
