@@ -3,6 +3,7 @@
   (:require [app.db :as db]
             [app.state :as state]
             [app.api :as api]
+            [app.frontend.views :as frontend]
             [app.errors-middleware :as errors-middleware]
             [org.httpkit.server :as server]
             [compojure.core :refer :all]
@@ -14,6 +15,8 @@
 
 (defroutes app-routes
   (context "/api" [] (api/api-routes))
+  (context "/" [] (frontend/frontend-routes))
+  (route/resources "/")
   (route/not-found "Error, page not found!"))
 
 (defn- start-http-server [port]
