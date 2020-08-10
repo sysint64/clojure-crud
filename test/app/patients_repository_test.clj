@@ -71,7 +71,7 @@
       (is (= (:id insert-data) (:id patient)))
       (test-fixture patient 1)))
 
-  (testing "get-patient-by-id"
+  (testing "not found"
     (clean-up)
     (let [patient (get-patient-by-id connection (:id 1))]
       (is (= nil patient)))))

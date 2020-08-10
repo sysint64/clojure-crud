@@ -10,6 +10,18 @@
         (for [[k v] map]
           [(keyword k) v])))
 
+(defn get-id-or-not-found [id]
+  (try (Integer/parseInt id)
+       (catch Exception e
+         (throw (ex-info "Not found exception"
+                         {:type :not-found-exception})))))
+
+(defn get-or-not-found [element]
+  (when (nil? element)
+    (throw (ex-info "Not found exception"
+                    {:type :not-found-exception})))
+  element)
+
 (def patient-input-spec
   {:first_name        [str-not-blank-validator (fn [value] (min-length-validator value 3))]
    :last_name         [str-not-blank-validator (fn [value] (min-length-validator value 3))]
@@ -44,3 +56,9 @@
                                              (pagination/limit page-size))]
       {:next-page (pagination/next-page result page page-size)
        :result    (pagination/get-result result page-size)})))
+
+(defn get-patient-by-id [id]
+  (let [connection (state/db-connection)
+        id (get-id-or-not-found id)
+        patient (repository/get-patient-by-id connection id)]
+    (get-or-not-found patient)))

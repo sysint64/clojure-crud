@@ -37,28 +37,34 @@
                     :not-found-exception  (not-found-error-body e)
                     :else                 (internal-server-error-body e)))))))
 
-(defn get-patients [req]
+(defn get-patients [request]
   {:status  200
    :headers {"Content-Type" "application/json"}
-   :body    (let [page (:page (:params req))]
+   :body    (let [page (:page (:params request))]
               (service/get-all-patients page 10))})
 
-(defn post-patients [req]
+(defn get-patient-by-id [request id]
   {:status  200
    :headers {"Content-Type" "application/json"}
-   :body    (let [body (:body req)]
-              (println body)
+   :body    (let [id (:id (:params request))]
+              (service/get-patient-by-id id))})
+
+(defn post-patients [request]
+  {:status  200
+   :headers {"Content-Type" "application/json"}
+   :body    (let [body (:body request)]
               (service/create-patient body))})
 
-(defn search-patients [req]
+(defn search-patients [request]
   {:status  200
    :headers {"Content-Type" "application/json"}
-   :body    (let [page (:page (:params req))
-                  key  (:key  (:params req))]
+   :body    (let [page (:page (:params request))
+                  key  (:key  (:params request))]
               (service/search-patients key page 10))})
 
 (defn api-routes []
   (routes
    (GET "/patients/" [] get-patients)
+   (GET "/patients/:id{[0-9]+}" [id :as request] (get-patient-by-id request id))
    (POST "/patients" [] post-patients)
    (GET "/search-patients" [] search-patients)))
