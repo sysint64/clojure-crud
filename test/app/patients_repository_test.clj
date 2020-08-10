@@ -56,7 +56,8 @@
           patient (get-patient-by-id connection (:id insert-data))]
       (is (= (:id insert-data) (:id patient)))
       (is (= (:id update-data) (:id patient)))
-      (test-fixture patient 2)))
+      (test-fixture patient 2)
+      (test-fixture update-data 2)))
 
   (testing "update patient nil"
     (clean-up)
