@@ -3,16 +3,14 @@
   (:require [app.db :as db]
             [app.state :as state]
             [app.api :as api]
+            [app.errors-middleware :as errors-middleware]
             [org.httpkit.server :as server]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer :all]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [com.stuartsierra.component :as component]
-            [clojure.pprint :as pp]
-            [clojure.string :as str]
-            [clojure.data.json :as json]
-            [clojure.java.jdbc :as jdbc]))
+            [clojure.string :as str]))
 
 (defroutes app-routes
   (context "/api" [] (api/api-routes))
@@ -21,7 +19,7 @@
 (defn- start-http-server [port]
   (server/run-server (wrap-json-response
                       (wrap-json-body
-                       (api/wrap-error-handler
+                       (errors-middleware/wrap-error-handler
                         (wrap-defaults #'app-routes api-defaults))))
                      {:port port}))
 

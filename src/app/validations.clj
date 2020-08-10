@@ -75,4 +75,5 @@
   (let [[is_valid messages] (spec-validator values spec)]
     (when (not is_valid)
       (throw (ex-info "Validation exception"
-                      {:type :validation-exception, :error-messages messages})))))
+                      {:type :validation-exception, :error-messages messages}))))
+  values)

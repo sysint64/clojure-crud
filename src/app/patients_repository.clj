@@ -63,7 +63,7 @@
                            "  address = ?,"
                            "  oms_policy_number = ?"
                            "WHERE id = ?"
-                           "RETURNING id")
+                           "RETURNING *, to_char(date_of_birth, 'DD.MM.YYYY') as date_of_birth_str")
                           (:first_name values)
                           (:last_name values)
                           (:middle_name values)
@@ -72,4 +72,4 @@
                           (:address values)
                           (:oms_policy_number values)
                           id]
-              {:result-set-fn first}))
+              {:result-set-fn (fn [it] (replace-date-of-birth (first it)))}))
