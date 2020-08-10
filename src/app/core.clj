@@ -7,6 +7,7 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer :all]
+            [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [com.stuartsierra.component :as component]
             [clojure.pprint :as pp]
             [clojure.string :as str]
@@ -14,12 +15,14 @@
             [clojure.java.jdbc :as jdbc]))
 
 (defroutes app-routes
-  (GET "/api/get-patients" [] api/get-patients)
-  (GET "/api/search-patients" [] api/search-patients)
+  (context "/api" [] (api/api-routes))
   (route/not-found "Error, page not found!"))
 
 (defn- start-http-server [port]
-  (server/run-server (api/wrap-error-handler (wrap-defaults #'app-routes site-defaults))
+  (server/run-server (wrap-json-response
+                      (wrap-json-body
+                       (api/wrap-error-handler
+                        (wrap-defaults #'app-routes api-defaults))))
                      {:port port}))
 
 (defn- stop-server [server]
@@ -54,20 +57,14 @@
     (stop-server (:server component))
     (dissoc component :server)))
 
-(defn new-database [uri]
-  (map->Database {:uri uri}))
-
-(defn new-http-server [port]
-  (map->HttpServer {:port port}))
-
 (defn crud-system [config-options]
   (let [{:keys [db_uri http_port]} config-options]
     (component/system-map
-     :db (new-database db_uri)
-     :server (new-http-server http_port))))
+     :db     (map->Database   {:uri  db_uri})
+     :server (map->HttpServer {:port http_port}))))
 
 (defn create-system []
-  (crud-system {:db_uri (System/getenv "DATABASE_URL")
+  (crud-system {:db_uri    (System/getenv "DATABASE_URL")
                 :http_port 8080}))
 
 (defn -main

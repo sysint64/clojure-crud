@@ -9,6 +9,7 @@
                  [compojure "1.6.2"]
                  [http-kit "2.4.0"]
                  [ring/ring-defaults "0.3.2"]
+                 [ring/ring-json "0.5.0"]
                  [org.postgresql/postgresql "42.2.14"]
                  [migratus "1.2.8"]
                  [com.stuartsierra/component "1.0.0"]
