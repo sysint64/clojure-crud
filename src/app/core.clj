@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [app.db :as db]
             [app.state :as state]
-            [app.patients-service :as service]
+            [app.api :as api]
             [org.httpkit.server :as server]
             [compojure.core :refer :all]
             [compojure.route :as route]
@@ -13,17 +13,14 @@
             [clojure.data.json :as json]
             [clojure.java.jdbc :as jdbc]))
 
-(defn list-page [req]
-  {:status  200
-   :headers {"Content-Type" "text/json"}
-   :body (str (json/write-str (service/get-all-patients (:page (:params req)) 10)))})
-
 (defroutes app-routes
-  (GET "/" [] list-page)
+  (GET "/api/get-patients" [] api/get-patients)
+  (GET "/api/search-patients" [] api/search-patients)
   (route/not-found "Error, page not found!"))
 
 (defn- start-http-server [port]
-  (server/run-server (wrap-defaults #'app-routes site-defaults) {:port port}))
+  (server/run-server (api/wrap-error-handler (wrap-defaults #'app-routes site-defaults))
+                     {:port port}))
 
 (defn- stop-server [server]
   (when server

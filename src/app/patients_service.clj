@@ -27,3 +27,12 @@
                                               (pagination/limit page-size))]
       {:next-page (pagination/next-page result page page-size)
        :result (pagination/get-result result page-size)})))
+
+(defn search-patients [key page page-size]
+  (let [connection (state/db-connection)
+        page (pagination/parse-page page)]
+    (let [result (repository/search-patients connection key
+                                             (pagination/offset page page-size)
+                                             (pagination/limit page-size))]
+      {:next-page (pagination/next-page result page page-size)
+       :result (pagination/get-result result page-size)})))
