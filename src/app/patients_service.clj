@@ -2,13 +2,8 @@
   (:require [app.patients-repository :as repository]
             [app.state :as state]
             [app.validations :refer :all]
-            [app.pagination :as pagination]))
-
-;; https://stackoverflow.com/questions/9406156/clojure-convert-hash-maps-key-strings-to-keywords
-(defn- wrap-keyword-map [map]
-  (into {}
-        (for [[k v] map]
-          [(keyword k) v])))
+            [app.pagination :as pagination]
+            [app.transforms :as transforms]))
 
 (defn get-id-or-not-found [id]
   (try (Integer/parseInt id)
@@ -35,7 +30,7 @@
 
 (defn create-patient [input]
   (let [connection (state/db-connection)
-        input (wrap-keyword-map input)]
+        input (transforms/wrap-keyword-map input)]
     (validate-by-spec input patient-input-spec)
     (repository/insert-patient connection input)))
 
@@ -66,7 +61,7 @@
 (defn update-patient-by-id [id input]
   (let [connection (state/db-connection)
         id (get-id-or-not-found id)
-        input (wrap-keyword-map input)
+        input (transforms/wrap-keyword-map input)
         input (validate-by-spec input patient-input-spec)
         patient (repository/update-patient-by-id connection id input)]
     (get-or-not-found patient)))

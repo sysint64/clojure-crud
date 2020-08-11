@@ -6,6 +6,8 @@
       (.-innerHTML)
       (set! component)))
 
-(defn add-event-listener [id type handler]
-  (.addEventListener
-   (.getElementById js/document id) type handler false))
+(defn add-event-listener [selector type handler]
+  (reduce
+   (fn [_, item] (.addEventListener item type handler false))
+   nil
+   (.querySelectorAll js/document selector)))
