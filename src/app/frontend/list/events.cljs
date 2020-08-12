@@ -1,7 +1,8 @@
 (ns app.frontend.list.events
   (:require [ajax.core :refer [GET]]
             [app.frontend.ui :as ui]
-            [app.frontend.list.states :as states]))
+            [app.frontend.list.states :as states]
+            [app.frontend.details.events :as details]))
 
 (declare on-load)
 (declare on-search)
@@ -26,7 +27,14 @@
   (.preventDefault event))
 
 (defn on-prev-page-click [event]
+  (let [query (. (. (.getElementById js/document "prev-page") -dataset) -query)]
+    (on-load-by-query query))
   (.preventDefault event))
+
+(defn on-patient-link-click [event]
+  (.preventDefault event)
+  (let [id (. (. (. event -target) -dataset) -id)]
+    (details/on-load id)))
 
 (defn loading-error-handlers []
   (ui/add-event-listener "#try-again" "click" on-try-again-click))
@@ -34,7 +42,8 @@
 (defn loaded-handlers []
   (ui/add-event-listener "#search-button" "click" on-search-click)
   (ui/add-event-listener "#next-page" "click" on-next-page-click)
-  (ui/add-event-listener "#prev-page" "click" on-prev-page-click))
+  (ui/add-event-listener "#prev-page" "click" on-prev-page-click)
+  (ui/add-event-listener ".patient-link" "click" on-patient-link-click))
 
 (defn base-handlers []
   (ui/add-event-listener "#insert" "click" on-insert-click))

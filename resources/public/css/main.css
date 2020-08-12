@@ -71,7 +71,7 @@ a:hover {
     text-decoration: underline;
 }
 
-.back {
+#go-back-link {
     display: block;
     font-size: 24px;
     margin-bottom: 20px;

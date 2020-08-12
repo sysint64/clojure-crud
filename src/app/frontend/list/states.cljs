@@ -22,7 +22,8 @@
 
 (hiccups/defhtml patient [patient]
   [:div {:class "patient-list-item"}
-   [:a {:href "details.html"} (full-name patient)]])
+   [:a {:href "" :class "patient-link" :data-id (get patient "id")}
+    (full-name patient)]])
 
 (hiccups/defhtml search []
   [:div {:class "search"}
