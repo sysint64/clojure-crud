@@ -2,14 +2,15 @@
   (:require [ajax.core :refer [GET]]
             [app.frontend.ui :as ui]
             [app.frontend.list.states :as states]
-            [app.frontend.details.events :as details]))
+            [app.frontend.details.events :as details]
+            [app.frontend.form.events :as form]))
 
 (declare on-load)
 (declare on-search)
 (declare on-load-by-query)
 
 (defn on-insert-click [event]
-  (js/alert "Hello world!")
+  (form/on-insert-load)
   (.preventDefault event))
 
 (defn on-try-again-click [event]

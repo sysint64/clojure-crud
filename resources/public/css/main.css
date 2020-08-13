@@ -2,17 +2,34 @@ input[type=text] {
     background: #fff;
     border: 1px solid #000;
     height: 20px;
-    padding: 1px 2px;
+    padding: 1px 4px;
+    width: 100%;
 }
 
-input[type=text].error {
+input[type=date] {
+    background: #fff;
+    border: 1px solid #000;
+    height: 24px;
+    padding: 1px 6px;
+}
+
+select {
+    background: #fff;
+    border: 1px solid #000;
+    height: 28px;
+    padding: 1px 4px;
+}
+
+input[type=text].error, select.error, input[type=date].error {
     border: 1px solid #f00;
 }
 
 input[type=submit] {
-    height: 24px;
+    height: 32px;
     background: #ccc;
     border: 0px;
+    margin: 5px;
+    width: 100px;
 }
 
 #search-button {
@@ -25,10 +42,18 @@ input[type=submit] {
 
 .error-text {
     color: #f00;
+    font-size: 12;
+    padding: 5px 0;
 }
 
 .form-line {
     padding: 5px;
+}
+
+.form-line label {
+    padding: 5px 0;
+    display: block;
+    font-weight: bold;
 }
 
 .container {
