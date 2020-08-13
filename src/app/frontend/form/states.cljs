@@ -24,6 +24,9 @@
   (loading-title)
   [:div {:class "loading"} "Loading..."])
 
+(hiccups/defhtml submitting []
+  [:div {:class "submitting"} "Submitting..."])
+
 (hiccups/defhtml line [label error-text child]
   [:div {:class "form-line"}
    [:div [:label label]]
@@ -33,6 +36,9 @@
 (defn error-class [errors key]
   (when (not (nil? (get errors key)))
     "error"))
+
+(hiccups/defhtml error-message []
+  [:div {:class "error-message"} "Something went wrong"])
 
 (hiccups/defhtml error-text [errors key]
   [:div (when (get errors key)
@@ -52,7 +58,9 @@
   (line label (error-text errors key)
         [:select {:name key :class (error-class errors key)}
          (map (fn [option]
-                [:option {:value (nth option 0)} (nth option 1)])
+                [:option {:value (nth option 0)
+                          :selected (if (= (nth option 0) (get patient key)) true nil)}
+                 (nth option 1)])
               options)]))
 
 (hiccups/defhtml submit-button [title]
@@ -70,8 +78,21 @@
   (text-input patient errors "Address" "address")
   (text-input patient errors "OMS policy number" "oms_policy_number"))
 
-(hiccups/defhtml insert-loaded []
+(hiccups/defhtml insert-loaded [input errors]
   (insert-title)
   [:form {:id "form"}
-   (form nil nil)
+   (form input errors)
+   (submit-button "Insert")])
+
+(hiccups/defhtml insert-submitting [input]
+  (insert-title)
+  [:form {:id "form"}
+   (form input nil)
+   (submitting)])
+
+(hiccups/defhtml insert-error [input]
+  (insert-title)
+  [:form {:id "form"}
+   (form input nil)
+   (error-message)
    (submit-button "Insert")])

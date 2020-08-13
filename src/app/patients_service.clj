@@ -23,7 +23,7 @@
    :middle_name       [str-not-blank-validator (fn [value] (min-length-validator value 3))]
    :sex               [str-not-blank-validator
                        (fn [value] (enum-validator value ["MALE", "FEMALE", "PREFER_NOT_SAY"]))]
-   :date_of_birth     [str-not-blank-validator]
+   :date_of_birth     [str-not-blank-validator date-validator]
    :address           [str-not-blank-validator (fn [value] (min-length-validator value 3))]
    :oms_policy_number [str-not-blank-validator digits-only-validator
                        (fn [value] (exact-length-validator value 3))]})

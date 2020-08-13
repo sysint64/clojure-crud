@@ -13,13 +13,13 @@
   (reduce (fn [result item] (conj result (replace-date-of-birth item))) []
           (jdbc/reducible-query connection [(str
                                              "SELECT"
-                                             "  *, to_char(date_of_birth, 'DD.MM.YYYY') AS date_of_birth_str "
+                                             "  *, to_char(date_of_birth, 'YYYY-MM-DD') AS date_of_birth_str "
                                              "FROM patients OFFSET ? LIMIT ?") offset limit])))
 
 (defn get-patient-by-id [connection id]
   (jdbc/query connection [(str
                            "SELECT"
-                           "  *, to_char(date_of_birth, 'DD.MM.YYYY') AS date_of_birth_str "
+                           "  *, to_char(date_of_birth, 'YYYY-MM-DD') AS date_of_birth_str "
                            "FROM patients WHERE id = ?") id]
               {:result-set-fn (fn [it] (replace-date-of-birth (first it)))}))
 
@@ -27,7 +27,7 @@
   (reduce (fn [result item] (conj result (replace-date-of-birth item))) []
           (jdbc/reducible-query connection [(str
                                              "SELECT"
-                                             "  *, to_char(date_of_birth, 'DD.MM.YYYY') AS date_of_birth_str "
+                                             "  *, to_char(date_of_birth, 'YYYY-MM-DD') AS date_of_birth_str "
                                              "FROM patients "
                                              "WHERE "
                                              "  lower(first_name || last_name || middle_name || address || "
@@ -41,8 +41,8 @@
   (jdbc/query connection [(str
                            "INSERT INTO patients (first_name, last_name, middle_name, sex, "
                            "                      date_of_birth, address, oms_policy_number) "
-                           "VALUES (?, ?, ?, ?::sex_t, to_date(?, 'DD.MM.YYYY'), ?, ?)"
-                           "RETURNING *, to_char(date_of_birth, 'DD.MM.YYYY') as date_of_birth_str")
+                           "VALUES (?, ?, ?, ?::sex_t, to_date(?, 'YYYY-MM-DD'), ?, ?)"
+                           "RETURNING *, to_char(date_of_birth, 'YYYY-MM-DD') as date_of_birth_str")
                           (:first_name values)
                           (:last_name values)
                           (:middle_name values)
@@ -59,11 +59,11 @@
                            "  last_name = ?,"
                            "  middle_name = ?,"
                            "  sex = ?::sex_t,"
-                           "  date_of_birth = to_date(?, 'DD.MM.YYYY'),"
+                           "  date_of_birth = to_date(?, 'YYYY-MM-DD'),"
                            "  address = ?,"
                            "  oms_policy_number = ?"
                            "WHERE id = ?"
-                           "RETURNING *, to_char(date_of_birth, 'DD.MM.YYYY') as date_of_birth_str")
+                           "RETURNING *, to_char(date_of_birth, 'YYYY-MM-DD') as date_of_birth_str")
                           (:first_name values)
                           (:last_name values)
                           (:middle_name values)

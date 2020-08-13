@@ -7,4 +7,5 @@
 
 (enable-console-print!)
 
-(form/on-insert-load)
+;; (form/on-insert-load)
+(list/on-load)

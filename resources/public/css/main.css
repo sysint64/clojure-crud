@@ -34,16 +34,30 @@ input[type=submit] {
 
 #search-button {
     margin-left: 5px;
+    height: 24px;
 }
 
 .search {
     margin-bottom: 20px;
 }
 
+#search-input {
+    width: auto;
+}
+
 .error-text {
     color: #f00;
     font-size: 12;
     padding: 5px 0;
+}
+
+.error-message {
+    color: #f00;
+    padding: 5px;
+}
+
+.submitting {
+    padding: 12px;
 }
 
 .form-line {

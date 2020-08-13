@@ -13,21 +13,21 @@
                 :last_name "Ivanov"
                 :middle_name "Ivanovich"
                 :sex "MALE"
-                :date_of_birth "08.04.1991"
+                :date_of_birth "1991-04-08"
                 :address "st. Bolshevistskaya"
                 :oms_policy_number "123321"}
                {:first_name "Konstantin"
                 :last_name "KK"
                 :middle_name "Andreevish"
                 :sex "MALE"
-                :date_of_birth "08.08.1998"
+                :date_of_birth "1998-08-08"
                 :address "st. Lenina"
                 :oms_policy_number "123123"}
                {:first_name "Anastasiya"
                 :last_name "Zaharove"
                 :middle_name "Viktorovna"
                 :sex "FEMALE"
-                :date_of_birth "02.12.1992"
+                :date_of_birth "1992-02-12"
                 :address "st. Krasniy Prospect"
                 :oms_policy_number "888888888"}])
 
