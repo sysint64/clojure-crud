@@ -8,8 +8,8 @@
                  (get patient "first_name")
                  (get patient "middle_name")]))
 
-(hiccups/defhtml update-title [patient]
-  [:h1 (full-name patient)]
+(hiccups/defhtml update-title []
+  [:h1 "Update patient"]
   [:a {:href "" :id "go-back-link"} "< All patients"])
 
 (hiccups/defhtml insert-title []
@@ -67,6 +67,7 @@
   [:input {:id "submit" :type "submit" :value title}])
 
 (hiccups/defhtml form [patient errors]
+  [:input {:name "id" :type "hidden" :value (get patient "id")}]
   (text-input patient errors "First name" "first_name")
   (text-input patient errors "Last name" "last_name")
   (text-input patient errors "Middle name" "middle_name")
@@ -84,8 +85,20 @@
    (form input errors)
    (submit-button "Insert")])
 
+(hiccups/defhtml update-loaded [input errors]
+  (update-title)
+  [:form {:id "form"}
+   (form input errors)
+   (submit-button "Update")])
+
 (hiccups/defhtml insert-submitting [input]
   (insert-title)
+  [:form {:id "form"}
+   (form input nil)
+   (submitting)])
+
+(hiccups/defhtml update-submitting [input]
+  (update-title)
   [:form {:id "form"}
    (form input nil)
    (submitting)])
@@ -96,3 +109,15 @@
    (form input nil)
    (error-message)
    (submit-button "Insert")])
+
+(hiccups/defhtml update-error [input]
+  (update-title)
+  [:form {:id "form"}
+   (form input nil)
+   (error-message)
+   (submit-button "Update")])
+
+(hiccups/defhtml error []
+  (loading-title)
+  [:div {:class "error"} "Loading error, try again later"]
+  [:div [:a {:href "" :id "try-again"} "Try again"]])

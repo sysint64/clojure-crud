@@ -1,7 +1,8 @@
 (ns app.frontend.details.events
   (:require [ajax.core :refer [GET DELETE]]
             [app.frontend.ui :as ui]
-            [app.frontend.details.states :as states]))
+            [app.frontend.details.states :as states]
+            [app.frontend.form.events :as form]))
 
 (declare on-load)
 (declare on-delete)
@@ -19,6 +20,10 @@
   (if (js/confirm "Are you sure you want to delete the patient?")
     (on-delete (get patient "id"))))
 
+(defn on-edit-click [patient event]
+  (.preventDefault event)
+  (form/on-update-load (get patient "id")))
+
 (defn go-back []
   ;; TODO: Couldn't manage to resolve circular dependency :(
   (.reload (. js/document -location)))
@@ -28,6 +33,8 @@
   (go-back))
 
 (defn loaded-handlers [patient]
+  (ui/add-event-listener "#edit" "click"
+                         (fn [event] (on-edit-click patient event)))
   (ui/add-event-listener "#delete" "click"
                          (fn [event] (on-delete-click patient event))))
 
