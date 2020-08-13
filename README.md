@@ -10,15 +10,15 @@ Simple CRUD application
 
 ```source dev-env.sh```
 
-**Run migrations*
+**Run migrations**
 
 ```lein migratus migrate```
 
-**Run server*
+**Run server**
 
 ```lein run```
 
-**Build cljs*
+**Build cljs**
 
 ```lein cljsbuild auto```
 
